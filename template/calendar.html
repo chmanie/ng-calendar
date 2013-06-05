@@ -1,5 +1,7 @@
 <table>
   <tr ng-repeat="week in cal">
-    <td ng-repeat="day in week">{{day}}</td>
+    <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}">
+      <span class="date">{{day.date}}</span>
+    </td>
   </tr> 
 </table>

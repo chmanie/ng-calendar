@@ -3,8 +3,27 @@
   <script type="text/javascript" src="components/angular/angular.js"></script>
   <script type="text/javascript" src="lib/calendar.js"></script>
   <script type="text/javascript" src="lib/ng-calendar.js"></script>
+  <script type="text/javascript">
+    function AppCtrl ($scope) {
+      $scope.date = new Date();
+      $scope.populate = function (date, thisMonth, today, pastDay) {
+        return today ? 'Heute' : 'Nicht heute';
+      }
+      $scope.nextMonth = function () {   
+        $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()+1);
+      }
+      $scope.previousMonth = function () {   
+        $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()-1);
+      }
+    };
+  </script>
+  <link href="assets/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
 </head>
-<body ng-app='ng-calendar'>
-  <div calendar></div>
+<body ng-app="ng-calendar">
+  <div ng-controller='AppCtrl'>
+    <button ng-click="previousMonth()">Previous Month</button>
+    <button ng-click="nextMonth()">Next Month</button>
+    <div class="calendar-table" data-calendar="monthCalendar" data-calendar-date="date" data-populate="populate"></div>
+  </div>
 </body>
 </html>
