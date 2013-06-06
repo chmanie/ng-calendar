@@ -1,6 +1,6 @@
 <table>
   <tr ng-repeat="week in cal">
-    <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}">
+    <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}" data-day="{{day.date}}" data-month="{{day.month}}">
       <span class="date">{{day.date}}</span>
     </td>
   </tr> 
