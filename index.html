@@ -1,16 +1,35 @@
 <html>
 <head>
   <script type="text/javascript" src="components/angular/angular.js"></script>
+  <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
   <script type="text/javascript" src="lib/calendar.js"></script>
   <script type="text/javascript" src="lib/ng-calendar.js"></script>
   <script type="text/javascript" src="components/moment/moment.js"></script>
   <script type="text/javascript" src="components/moment/lang/de.js"></script>
   <script type="text/javascript">
-    function AppCtrl ($scope) {
-      $scope.date = new Date();
+    function AppCtrl ($scope, $resource, $http) {
+      
+      $http.get('/assets/events.json').success(function(data){
+        $scope.events = data.sort(function(a,b) {
+          if (a.date <= b.date) {
+            return -1;
+          }
+          return 1;
+        });
+        $scope.date = new Date();
+      });
+      
       $scope.momdate = moment($scope.date);
+
       $scope.populate = function (date, thisMonth, today, pastDay) {
-        return today ? 'Heute' : 'Nicht heute';
+        events = [];
+        while($scope.events[0]) {
+          if(new Date($scope.events[0].date).getDate() === date.getDate()) {
+            events.push($scope.events.shift());
+          } else {
+            return events;
+          }
+        }
       }
       $scope.nextMonth = function () {   
         $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()+1);
@@ -29,7 +48,7 @@
     <h1>{{momdate.format('Do MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div class="calendar-table" data-calendar="monthCalendar" data-calendar-date="date" data-week-start="0" data-weeks="2" data-populate="populate"></div>
+    <div class="calendar-table" data-calendar="monthCalendar" data-calendar-date="date" data-week-start="1" data-weeks="2" data-populate="populate"></div>
   </div>
 </body>
 </html>
