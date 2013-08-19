@@ -23,13 +23,19 @@ table.calendar-table {
 
 /* line 23, screen.scss */
 .calendar-table td {
-  width: 100px;
+  width: 150px;
   height: 100px;
   border: solid;
   border-width: 1px;
   margin: 0px;
   padding: 0px;
   vertical-align: top;
+}
+
+.calendar-table td a {
+  text-decoration: none;
+  display: inline-block;
+  color: white;
 }
 
 /* line 33, screen.scss */
@@ -40,9 +46,16 @@ table.calendar-table {
 
 .transparent {
   color: rgba(0, 0, 0, 0);
+  opacity: 0;
 }
 
 .event {
+  margin: 10px 0px;
+  background-color: lightblue;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 20px;
   height: 20px;
-  width: 50px;
+  width: 150px;
+  cursor: hand;
 }
