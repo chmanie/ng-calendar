@@ -37,3 +37,7 @@ table.calendar-table {
   float: left;
   font-size: 10px;
 }
+
+.transparent {
+  color: rgba(0, 0, 0, 0);
+}

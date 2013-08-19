@@ -2,9 +2,7 @@
   <tr ng-repeat="week in cal">
     <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}" data-day="{{day.date}}" data-month="{{day.month}}">
       <span class="date">{{day.date}}</span>
-      <ul> 
-        <li ng-repeat="event in day.contents">{{event.title}}</li>
-      </ul>
+        <div style="height:150px;border:solid;overflow:scroll" btf-dragon="event in day.contents">{{event.title}}</div>
     </td>
   </tr> 
 </table>

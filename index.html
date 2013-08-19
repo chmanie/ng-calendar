@@ -1,14 +1,15 @@
 <html>
 <head>
-  <script type="text/javascript" src="components/angular/angular.js"></script>
-  <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
+  <script type="text/javascript" src="components/angular-1.2/angular.js"></script>
+  <script type="text/javascript" src="components/angular-1.2/angular-resource.js"></script>
+  <script type="text/javascript" src="lib/dragon-drop.js"></script>
   <script type="text/javascript" src="lib/calendar.js"></script>
   <script type="text/javascript" src="lib/ng-calendar.js"></script>
   <script type="text/javascript" src="components/moment/moment.js"></script>
   <script type="text/javascript" src="components/moment/lang/de.js"></script>
+  <link href="assets/css/styles.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
-    function AppCtrl ($scope, $resource, $http) {
-      
+    angular.module('ngCalendarExample', ['ngResource', 'ngCalendar']).controller('AppCtrl', function ($scope, $resource, $http) {
       $http.get('/assets/events.json').success(function(data){
         $scope.events = data.sort(function(a,b) {
           if (a.date <= b.date) {
@@ -39,11 +40,10 @@
         $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()-1);
         $scope.momdate = moment($scope.date);
       }
-    };
+    });
   </script>
-  <link href="assets/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
 </head>
-<body ng-app="ng-calendar">
+<body ng-app="ngCalendarExample">
   <div ng-controller='AppCtrl'>
     <h1>{{momdate.format('Do MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>

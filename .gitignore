@@ -1,4 +1,4 @@
+node_modules
 assets/events.json
 .DS_Store
 components
-.sass-cache
