@@ -41,3 +41,8 @@ table.calendar-table {
 .transparent {
   color: rgba(0, 0, 0, 0);
 }
+
+.event {
+  height: 20px;
+  width: 50px;
+}
