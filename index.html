@@ -10,6 +10,9 @@
   <link href="assets/css/styles.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
     angular.module('ngCalendarExample', ['ngResource', 'ngCalendar']).controller('AppCtrl', function ($scope, $resource, $http) {
+      
+      $scope.date = new Date();
+
       $http.get('/assets/events.json').success(function(data){
         $scope.events = data.sort(function(a,b) {
           if (a.date <= b.date) {
@@ -48,7 +51,7 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div class="calendar-table" data-calendar="monthCalendar" data-calendar-date="date" data-week-start="1" data-weeks="2" data-populate="populate"></div>
+    <div class="calendar-table" data-calendar="monthCalendar" data-calendar-date="date" data-week-start="1" data-weeks="2" populate="populate($date, $today, $thisMonth, $pastDay)"></div>
   </div>
 </body>
 </html>
