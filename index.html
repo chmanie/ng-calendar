@@ -1,26 +1,15 @@
 <html>
 <head>
-  <script type="text/javascript" src="components/angular-1.2/angular.js"></script>
-  <script type="text/javascript" src="components/angular-1.2/angular-resource.js"></script>
-  <script type="text/javascript" src="lib/calendar.js"></script>
-  <script type="text/javascript" src="lib/ng-calendar.js"></script>
-  <script type="text/javascript" src="components/moment/moment.js"></script>
-  <script type="text/javascript" src="components/moment/lang/de.js"></script>
-  <link href="assets/css/styles.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/calendar.js/calendar.js"></script>
+  <script type="text/javascript" src="dist/ng-calendar.js"></script>
+  <script type="text/javascript" src="bower_components/moment/moment.js"></script>
+  <script type="text/javascript" src="bower_components/moment/lang/de.js"></script>
+  <link href="styles.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
-    angular.module('ngCalendarExample', ['ngResource', 'ngCalendar']).controller('AppCtrl', function ($scope, $resource, $http) {
+    angular.module('ngCalendarExample', ['ngCalendar']).controller('AppCtrl', function ($scope, $http) {
       
       $scope.date = new Date();
-
-      // $http.get('/assets/events.json').success(function(data){
-      //   $scope.events = data.sort(function(a,b) {
-      //     if (a.date <= b.date) {
-      //       return -1;
-      //     }
-      //     return 1;
-      //   });
-      //   $scope.date = new Date();
-      // });
 
       $scope.events = [
         { title: 'Test', date: new Date() }
@@ -50,7 +39,16 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-weeks="2" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)"></div>
+    <table class="calendar-table" calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
+      <tr ng-repeat="week in calendar">
+        <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}" data-day="{{day.date}}" data-month="{{day.month}}">
+        <span class="date">{{day.date}}</span>
+        <div class="calendar-element" cal-element="event in day.data">
+          <span class="event">{{event.title}}</span>
+        </div>
+        </td>
+      </tr> 
+    </table>
   </div>
 </body>
 </html>

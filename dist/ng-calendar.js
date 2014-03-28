@@ -35,9 +35,9 @@ angular.module('ngCalendar', [])
 .directive('calendar', function(Calendar, $parse, calListeners, $q){
   // Runs during compile
   return {
-    scope: {},
     restrict: 'A',
-    templateUrl: 'template/calendar.html',
+    // template: '<div></div>',
+
     link: function($scope, iElm, attrs, controller) {
 
       var populate;
@@ -48,7 +48,7 @@ angular.module('ngCalendar', [])
       if (!match) {
         populate = function (date, thisMonth, today, pastDay) {
           var populateFn = $parse(attrs.calPopulate);
-          return populateFn($scope.$parent, {
+          return populateFn($scope, {
             $date: date,
             $thisMonth: thisMonth,
             $today: today,
@@ -61,7 +61,7 @@ angular.module('ngCalendar', [])
           source: match[4],
           mapper: match[1]
         };
-        var calItems = $scope.$parent.$eval(populateMatch.source);
+        var calItems = $scope.$eval(populateMatch.source);
         var propName = populateMatch.mapper.replace(populateMatch.itemName, '').substr(1);
         
         populate = function (date, thisMonth, today, pastDay) {
@@ -78,17 +78,18 @@ angular.module('ngCalendar', [])
       }
 
       function getDate() {
-        return $scope.$parent.$eval(attrs.calDate);
+        return $scope.$eval(attrs.calDate);
       }
 
-      calListeners.setScope($scope.$parent);
+      calListeners.setScope($scope);
       calListeners.onDrop($parse(attrs.calDrop));
 
+      var cal = new Calendar();
+
       $scope.$watch(getDate, function(calendarDate, oldCalendarDate) {
-        if (calendarDate === oldCalendarDate) return;
         var date = new Date(calendarDate);
         // TODO: insert more options e.g. weekStart
-        var cal = new Calendar().createCalendar(date, { method: attrs.calendar, weekStart: attrs.calWeekStart, weeks: attrs.calWeeks }, function(date, thisMonth, today, pastDay) {
+        $scope.calendar = cal.createCalendar(date, { method: attrs.calendar, weekStart: attrs.calWeekStart, weeks: attrs.calWeeks }, function(date, thisMonth, today, pastDay) {
           return {
             year: date.getFullYear(),
             month: date.getMonth(),
@@ -97,10 +98,9 @@ angular.module('ngCalendar', [])
             thisMonth: thisMonth,
             today: today,
             pastDay: pastDay,
-            contents: populate(date, thisMonth, today, pastDay) || []
+            data: populate(date, thisMonth, today, pastDay) || []
           };
         });
-        $scope.cal = cal;
       });
     }
   };
@@ -114,7 +114,8 @@ angular.module('ngCalendar', [])
 
 .directive('calElement', function ($document, $compile, $rootScope, calListeners) {
 
-    var dragValue,
+    var body = $document[0].body,
+      dragValue,
       dragKey,
       dragOrigin,
       dragDuplicate = false,
@@ -185,7 +186,6 @@ angular.module('ngCalendar', [])
     var getElementOffset = function (elt) {
 
       var box = elt.getBoundingClientRect();
-      var body = $document[0].body;
 
       var xPosition = box.left + body.scrollLeft;
       var yPosition = box.top + body.scrollTop;
@@ -246,7 +246,7 @@ angular.module('ngCalendar', [])
           });
           killFloaty();
         } else {
-          originElement.removeClass('transparent');
+          originElement.css({ 'opacity': '1'});
           killFloaty();
         }
       } else {
@@ -254,11 +254,11 @@ angular.module('ngCalendar', [])
           floaty.css({
             'transition': 'all 0.5s',
             '-webkit-transition': 'all 0.5s',
-            'left': originElemOffsetX,
-            'top': originElemOffsetY
+            'left': originElemOffsetX - body.scrollLeft,
+            'top': originElemOffsetY - body.scrollTop
           });
           floaty.bind('webkitTransitionEnd', function () { // TODO: add other browser events
-            originElement.removeClass('transparent');
+            originElement.css({ 'opacity': '1'});
             killFloaty();
           });
         }, 0);
@@ -362,7 +362,7 @@ angular.module('ngCalendar', [])
             originElemOffsetY = offset.top;
 
             spawnFloaty();
-            originElement.addClass('transparent');
+            originElement.css({ 'opacity': '0'});
             drag(ev);
           });
         };

@@ -37,17 +37,17 @@ table.calendar-table {
 
 /* line 33, screen.scss */
 .calendar-table td span.date {
-  float: left;
   font-size: 10px;
+  display: block;
 }
 
-.transparent {
-  color: rgba(0, 0, 0, 0);
-  opacity: 0;
+.calendar-table td .calendar-element {
+  overflow: hidden;
+  height: 90px;
 }
 
 .event {
-  margin: 10px 0px;
+  margin: 2px 0px;
   background-color: lightblue;
   overflow: hidden;
   font-size: 12px;
