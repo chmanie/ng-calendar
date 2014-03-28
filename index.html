@@ -33,15 +33,21 @@
             return events;
           }
         }
-      }
+      };
+
       $scope.nextMonth = function () {   
         $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()+1);
         $scope.momdate = moment($scope.date);
-      }
+      };
+
       $scope.previousMonth = function () {   
         $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()-1);
         $scope.momdate = moment($scope.date);
-      }
+      };
+
+      $scope.calDrop = function (targetDay, originDay) {
+        console.log(targetDay, originDay);
+      };
     });
   </script>
 </head>
@@ -50,7 +56,7 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div data-calendar="monthCalendar" data-calendar-date="date" data-week-start="1" data-weeks="2" populate="populate($date, $today, $thisMonth, $pastDay)"></div>
+    <div calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-weeks="2" cal-populate="populate($date, $today, $thisMonth, $pastDay)" cal-drop="calDrop($targetDay, $originDay)"></div>
   </div>
 </body>
 </html>

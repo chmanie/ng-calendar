@@ -2,7 +2,9 @@
   <tr ng-repeat="week in cal">
     <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}" data-day="{{day.date}}" data-month="{{day.month}}">
       <span class="date">{{day.date}}</span>
-        <div style="height:100px;" cal-element="event in day.contents">{{event.title}}</div>
+        <div style="height:100px;" cal-element="event in day.contents">
+          <span class="event">{{event.title}}</span>
+        </div>
     </td>
   </tr> 
 </table>
