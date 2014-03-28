@@ -12,28 +12,21 @@
       
       $scope.date = new Date();
 
-      $http.get('/assets/events.json').success(function(data){
-        $scope.events = data.sort(function(a,b) {
-          if (a.date <= b.date) {
-            return -1;
-          }
-          return 1;
-        });
-        $scope.date = new Date();
-      });
+      // $http.get('/assets/events.json').success(function(data){
+      //   $scope.events = data.sort(function(a,b) {
+      //     if (a.date <= b.date) {
+      //       return -1;
+      //     }
+      //     return 1;
+      //   });
+      //   $scope.date = new Date();
+      // });
+
+      $scope.events = [
+        { title: 'Test', date: new Date() }
+      ];
       
       $scope.momdate = moment($scope.date);
-
-      $scope.populate = function (date, thisMonth, today, pastDay) {
-        events = [];
-        while($scope.events.length) {
-          if(new Date($scope.events[0].date).getDate() === date.getDate()) {
-            events.push($scope.events.shift());
-          } else {
-            return events;
-          }
-        }
-      };
 
       $scope.nextMonth = function () {   
         $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth()+1);
@@ -57,7 +50,7 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-weeks="2" cal-populate="populate($date, $today, $thisMonth, $pastDay)" cal-drop="calDrop($item, $targetDay, $originDay)"></div>
+    <div calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-weeks="2" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)"></div>
   </div>
 </body>
 </html>
