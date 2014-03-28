@@ -45,7 +45,8 @@
         $scope.momdate = moment($scope.date);
       };
 
-      $scope.calDrop = function (targetDay, originDay) {
+      $scope.calDrop = function (item, targetDay, originDay) {
+        console.log(item);
         console.log(targetDay, originDay);
       };
     });
@@ -56,7 +57,7 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-weeks="2" cal-populate="populate($date, $today, $thisMonth, $pastDay)" cal-drop="calDrop($targetDay, $originDay)"></div>
+    <div calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-weeks="2" cal-populate="populate($date, $today, $thisMonth, $pastDay)" cal-drop="calDrop($item, $targetDay, $originDay)"></div>
   </div>
 </body>
 </html>
