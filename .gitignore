@@ -1,4 +1,3 @@
-node_modules
-assets/events.json
 .DS_Store
-components
+node_modules
+bower_components

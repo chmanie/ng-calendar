@@ -1,0 +1,27 @@
+{
+  "name": "ng-calendar",
+  "version": "0.1.0",
+  "homepage": "https://github.com/chmanie/ng-calendar",
+  "authors": [
+    "Christian Maniewski <christian@maniewski.de>"
+  ],
+  "description": "angular calendar directive with drag&drop and no jQuery",
+  "main": "dist/ng-calendar.js",
+  "keywords": [
+    "angular",
+    "calendar"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "config",
+    "scripts",
+    "tests"
+  ],
+  "dependencies": {
+    "calendar.js": "~0.1.1"
+  }
+}
