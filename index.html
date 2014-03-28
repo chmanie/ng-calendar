@@ -2,7 +2,6 @@
 <head>
   <script type="text/javascript" src="components/angular-1.2/angular.js"></script>
   <script type="text/javascript" src="components/angular-1.2/angular-resource.js"></script>
-  <script type="text/javascript" src="lib/dragon-drop.js"></script>
   <script type="text/javascript" src="lib/calendar.js"></script>
   <script type="text/javascript" src="lib/ng-calendar.js"></script>
   <script type="text/javascript" src="components/moment/moment.js"></script>
@@ -27,7 +26,7 @@
 
       $scope.populate = function (date, thisMonth, today, pastDay) {
         events = [];
-        while($scope.events[0]) {
+        while($scope.events.length) {
           if(new Date($scope.events[0].date).getDate() === date.getDate()) {
             events.push($scope.events.shift());
           } else {
@@ -51,7 +50,7 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <div class="calendar-table" data-calendar="monthCalendar" data-calendar-date="date" data-week-start="1" data-weeks="2" populate="populate($date, $today, $thisMonth, $pastDay)"></div>
+    <div data-calendar="monthCalendar" data-calendar-date="date" data-week-start="1" data-weeks="2" populate="populate($date, $today, $thisMonth, $pastDay)"></div>
   </div>
 </body>
 </html>
