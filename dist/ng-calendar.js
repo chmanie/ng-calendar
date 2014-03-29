@@ -40,41 +40,25 @@ angular.module('ngCalendar', [])
 
     link: function($scope, iElm, attrs, controller) {
 
-      var populate;
+      var populateSync;
 
-      var POPULATE_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+(.*)$/;
+      if (attrs.populate) {
 
-      var match = attrs.calPopulate.match(POPULATE_REGEXP);
-      if (!match) {
-        populate = function (date, thisMonth, today, pastDay) {
-          var populateFn = $parse(attrs.calPopulate);
-          return populateFn($scope, {
-            $date: date,
-            $thisMonth: thisMonth,
-            $today: today,
-            $pastDay: pastDay 
-          });
-        };
-      } else {
-        var populateMatch = {
-          itemName: match[3],
-          source: match[4],
-          mapper: match[1]
-        };
-        var calItems = $scope.$eval(populateMatch.source);
-        var propName = populateMatch.mapper.replace(populateMatch.itemName, '').substr(1);
-        
-        populate = function (date, thisMonth, today, pastDay) {
-          var calEvents = [];
-          calItems.forEach(function (item) {
-            var itemDate = new Date(item[propName]);
-            if ((itemDate.getFullYear() !== date.getFullYear()) || (itemDate.getMonth() !== date.getMonth())) return;
-            if (itemDate.getDate() === date.getDate()) {
-              calEvents.push(item);
-            }
-          });
-          return calEvents;
-        };
+        var POPULATE_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+(.*)$/;
+
+        var match = attrs.populate.match(POPULATE_REGEXP);
+
+        if (!match) {
+          populateSync = function (date, thisMonth, today, pastDay) {
+            var populateFn = $parse(attrs.populate);
+            return populateFn($scope, {
+              $date: date,
+              $thisMonth: thisMonth,
+              $today: today,
+              $pastDay: pastDay 
+            });
+          };
+        }
       }
 
       function getDate() {
@@ -84,23 +68,46 @@ angular.module('ngCalendar', [])
       calListeners.setScope($scope);
       calListeners.onDrop($parse(attrs.calDrop));
 
-      var cal = new Calendar();
+      var calendar = new Calendar();
 
       $scope.$watch(getDate, function(calendarDate, oldCalendarDate) {
         var date = new Date(calendarDate);
-        // TODO: insert more options e.g. weekStart
-        $scope.calendar = cal.createCalendar(date, { method: attrs.calendar, weekStart: attrs.calWeekStart, weeks: attrs.calWeeks }, function(date, thisMonth, today, pastDay) {
-          return {
-            year: date.getFullYear(),
-            month: date.getMonth(),
-            date: date.getDate(),
-            weekday: date.getDay(),
-            thisMonth: thisMonth,
-            today: today,
-            pastDay: pastDay,
-            data: populate(date, thisMonth, today, pastDay) || []
+        
+        var cal = calendar.createCalendar(date, 
+          {
+            method: attrs.calendar,
+            weekStart: attrs.calWeekStart,
+            weeks: attrs.calWeeks 
+          }, populateSync);
+
+        $scope.calendar = cal.calendar;
+
+        if (populateSync || !attrs.populate) return;
+
+        var populateMatch = {
+          itemName: match[3],
+          source: match[4],
+          mapper: match[1]
+        };
+        var propName = populateMatch.mapper.replace(populateMatch.itemName, '').substr(1);
+
+        $q.when($scope.$eval(populateMatch.source)).then(function (calItems) {
+          
+          var populate = function (date, thisMonth, today, pastDay) {
+            var calEvents = [];
+            calItems.forEach(function (item) {
+              var itemDate = new Date(item[propName]);
+              if ((itemDate.getFullYear() !== date.getFullYear()) || (itemDate.getMonth() !== date.getMonth())) return;
+              if (itemDate.getDate() === date.getDate()) {
+                calEvents.push(item);
+              }
+            });
+            return calEvents;
           };
+
+          cal.populate(populate);
         });
+
       });
     }
   };

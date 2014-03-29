@@ -1,10 +1,10 @@
 <html>
 <head>
-  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-  <script type="text/javascript" src="bower_components/calendar.js/calendar.js"></script>
-  <script type="text/javascript" src="dist/ng-calendar.js"></script>
-  <script type="text/javascript" src="bower_components/moment/moment.js"></script>
-  <script type="text/javascript" src="bower_components/moment/lang/de.js"></script>
+  <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="../bower_components/calendar.js/calendar.js"></script>
+  <script type="text/javascript" src="../dist/ng-calendar.js"></script>
+  <script type="text/javascript" src="../bower_components/moment/moment.js"></script>
+  <script type="text/javascript" src="../bower_components/moment/lang/de.js"></script>
   <link href="styles.css" media="screen, projection" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
     angular.module('ngCalendarExample', ['ngCalendar']).controller('AppCtrl', function ($scope, $http) {
@@ -39,10 +39,10 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <table class="calendar-table" calendar="monthCalendar" cal-date="date" cal-week-start="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
+    <table class="calendar-table" calendar="monthCalendar" cal-date="date" cal-week-start="1" populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
       <tr ng-repeat="week in calendar">
         <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}" data-day="{{day.date}}" data-month="{{day.month}}">
-        <span class="date">{{day.date}}</span>
+        <span class="date">{{day.date.getDate()}}</span>
         <div class="calendar-element" cal-element="event in day.data">
           <span class="event">{{event.title}}</span>
         </div>
