@@ -61,16 +61,12 @@ angular.module('ngCalendar', [])
         }
       }
 
-      function getDate() {
-        return $scope.$eval(attrs.calDate);
-      }
-
       calListeners.setScope($scope);
       calListeners.onDrop($parse(attrs.calDrop));
 
       var calendar = new Calendar();
 
-      $scope.$watch(getDate, function(calendarDate, oldCalendarDate) {
+      $scope.$watch(function () { return $scope.$eval(attrs.calDate); }, function(calendarDate, oldCalendarDate) {
         var date = new Date(calendarDate);
         
         var cal = calendar.createCalendar(date, 
@@ -82,7 +78,7 @@ angular.module('ngCalendar', [])
 
         $scope.calendar = cal.calendar;
 
-        if (populateSync || !attrs.populate) return;
+        if (!match || populateSync || !attrs.populate) return;
 
         var populateMatch = {
           itemName: match[3],
