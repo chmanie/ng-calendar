@@ -22,6 +22,6 @@
     "tests"
   ],
   "dependencies": {
-    "calendar.js": "~0.1.1"
+    "calendar.js": "~0.1.2"
   }
 }
