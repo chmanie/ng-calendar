@@ -12,7 +12,8 @@
       $scope.date = new Date();
 
       $scope.events = [
-        { title: 'Test', date: new Date() }
+        { title: 'Movable!', date: new Date(), status: 'draft' },
+        { title: 'Not movable', date: new Date(2014, 3, 20), status: 'published' }
       ];
       
       $scope.momdate = moment($scope.date);
@@ -39,12 +40,12 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <table class="calendar-table" calendar="monthCalendar" cal-date="date" cal-week-start="1" populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
+    <table class="calendar-table" calendar="weeksCalendar" cal-weeks="4" cal-date="date" cal-week-start="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
       <tr ng-repeat="week in calendar">
-        <td ng-repeat="day in week" ng-class="{today: day.today, thismonth: day.thisMonth}" data-day="{{day.date}}" data-month="{{day.month}}">
+        <td ng-repeat="day in week" ng-class="{ today: day.today, thismonth: day.thisMonth }" data-day="{{day.date}}" data-month="{{day.month}}">
         <span class="date">{{day.date.getDate()}}</span>
-        <div class="calendar-element" cal-element="event in day.data">
-          <span class="event">{{event.title}}</span>
+        <div class="calendar-element" cal-element="event in day.data" >
+          <span class="event" cal-element-candrag="event.status == 'draft'">{{event.title}}</span>
         </div>
         </td>
       </tr> 

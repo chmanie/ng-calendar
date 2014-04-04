@@ -42,15 +42,15 @@ angular.module('ngCalendar', [])
 
       var populateSync;
 
-      if (attrs.populate) {
+      if (attrs.calPopulate) {
 
         var POPULATE_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?\s+for\s+(?:([\$\w][\$\w\d]*))\s+in\s+(.*)$/;
 
-        var match = attrs.populate.match(POPULATE_REGEXP);
+        var match = attrs.calPopulate.match(POPULATE_REGEXP);
 
         if (!match) {
           populateSync = function (date, thisMonth, today, pastDay) {
-            var populateFn = $parse(attrs.populate);
+            var populateFn = $parse(attrs.calPopulate);
             return populateFn($scope, {
               $date: date,
               $thisMonth: thisMonth,
@@ -78,7 +78,7 @@ angular.module('ngCalendar', [])
 
         $scope.calendar = cal.calendar;
 
-        if (!match || populateSync || !attrs.populate) return;
+        if (!match || populateSync || !attrs.calPopulate) return;
 
         var populateMatch = {
           itemName: match[3],
@@ -255,8 +255,8 @@ angular.module('ngCalendar', [])
       } else {
         window.setTimeout(function () {
           floaty.css({
-            'transition': 'all 0.5s',
-            '-webkit-transition': 'all 0.5s',
+            'transition': 'all 0.1s',
+            '-webkit-transition': 'all 0.1s',
             'left': originElemOffsetX - body.scrollLeft,
             'top': originElemOffsetY - body.scrollTop
           });
@@ -331,13 +331,16 @@ angular.module('ngCalendar', [])
           };
 
           elt.bind('mousedown', function (ev) {
-            if (dragValue) {
-              return;
-            }
-            
+
             // find the right parent
             originElement = angular.element(ev.target);
             var originScope = originElement.scope();
+
+            var canDrag = originScope.$eval(child.attr('cal-element-candrag'));
+
+            if (dragValue || !canDrag) {
+              return;
+            }
 
             while (originScope[valueIdentifier] === undefined) {
               originScope = originScope.$parent;

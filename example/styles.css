@@ -54,6 +54,6 @@ table.calendar-table {
   line-height: 20px;
   height: 20px;
   width: 150px;
-  cursor: hand;
+  cursor: pointer;
   display: block;
 }
