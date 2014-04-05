@@ -32,6 +32,14 @@
         console.log(item);
         console.log(targetDay, originDay);
       };
+
+      $scope.weeks = 4;
+
+      $scope.setWeeks = function () {
+        console.log('set weeks');
+        $scope.weeks = 5;
+      };
+
     });
   </script>
 </head>
@@ -40,7 +48,8 @@
     <h1>{{momdate.format('MMMM YYYY')}}</h1>
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
-    <table class="calendar-table" calendar="weeksCalendar" cal-weeks="4" cal-date="date" cal-week-start="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
+    <button ng-click="setWeeks()">Weeks</button>
+    <table class="calendar-table" calendar="weeksCalendar" cal-weeks="{{ weeks }}" cal-date="date" cal-week-start="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
       <tr ng-repeat="week in calendar">
         <td ng-repeat="day in week" ng-class="{ today: day.today, thismonth: day.thisMonth }" data-day="{{day.date}}" data-month="{{day.month}}">
         <span class="date">{{day.date.getDate()}}</span>
