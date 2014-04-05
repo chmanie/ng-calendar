@@ -36,7 +36,6 @@
       $scope.weeks = 4;
 
       $scope.setWeeks = function () {
-        console.log('set weeks');
         $scope.weeks = 5;
       };
 
@@ -54,7 +53,9 @@
         <td ng-repeat="day in week" ng-class="{ today: day.today, thismonth: day.thisMonth }" data-day="{{day.date}}" data-month="{{day.month}}">
         <span class="date">{{day.date.getDate()}}</span>
         <div class="calendar-element" cal-element="event in day.data" >
-          <span class="event" cal-element-candrag="event.status == 'draft'">{{event.title}}</span>
+          <div cal-entry cal-entry-candrag="event.status == 'draft'">
+            <span class="event">{{event.title}}</span>
+          </div>
         </div>
         </td>
       </tr> 

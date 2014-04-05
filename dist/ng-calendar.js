@@ -345,9 +345,14 @@
 
               // find the right parent
               originElement = angular.element(ev.target);
+              
+              while (originElement.attr('cal-entry') === undefined) {
+                originElement = originElement.parent();
+              }
+
               var originScope = originElement.scope();
 
-              var canDrag = originScope.$eval(child.attr('cal-element-candrag'));
+              var canDrag = originScope.$eval(child.attr('cal-entry-candrag'));
 
               if (dragValue || !canDrag) {
                 return;
@@ -367,7 +372,7 @@
               }
 
               // get offset inside element to drag
-              var offset = getElementOffset(ev.target);
+              var offset = getElementOffset(originElement[0]);
 
               dragOrigin = scope.$eval(rhs);
               // dragValue = angular.copy(dragValue);
