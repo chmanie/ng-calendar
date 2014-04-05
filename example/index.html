@@ -48,17 +48,22 @@
     <button ng-click="previousMonth()">Previous Month</button>
     <button ng-click="nextMonth()">Next Month</button>
     <button ng-click="setWeeks()">Weeks</button>
-    <table class="calendar-table" calendar="weeksCalendar" cal-weeks="{{ weeks }}" cal-date="date" cal-week-start="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
-      <tr ng-repeat="week in calendar">
-        <td ng-repeat="day in week" ng-class="{ today: day.today, thismonth: day.thisMonth }" data-day="{{day.date}}" data-month="{{day.month}}">
-        <span class="date">{{day.date.getDate()}}</span>
-        <div class="calendar-element" cal-element="event in day.data" >
-          <div cal-entry cal-entry-candrag="event.status == 'draft'">
-            <span class="event">{{event.title}}</span>
+    <table class="calendar-table" calendar="weeks" cal-weeks="{{ weeks }}" cal-date="date" cal-weekstart="1" cal-populate="event.date for event in events" cal-drop="calDrop($item, $targetDay, $originDay)">
+      <thead>
+        <tr><th ng-repeat="wday in $weekdays">{{ wday }}</th></tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="week in $weeks">
+          <td ng-repeat="day in week" ng-class="{ today: day.isToday, thismonth: day.isInCurrentMonth, pastdate: day.isPastDate }" data-day="{{day.date}}" data-month="{{day.month}}">
+          <span class="date">{{day.date.getDate()}}</span>
+          <div class="calendar-element" cal-day="event in day.entries" >
+            <div cal-entry cal-entry-draggable="event.status == 'draft'">
+              <span class="event">{{event.title}}</span>
+            </div>
           </div>
-        </div>
-        </td>
-      </tr> 
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </body>

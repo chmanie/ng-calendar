@@ -40,7 +40,7 @@
 
       link: function($scope, element, attrs, controller) {
 
-        var populateSync;
+        var populateSync, date;
 
         if (attrs.calPopulate) {
 
@@ -53,9 +53,9 @@
               var populateFn = $parse(attrs.calPopulate);
               return populateFn($scope, {
                 $date: date,
-                $thisMonth: thisMonth,
-                $today: today,
-                $pastDay: pastDay 
+                $isInCurrentMonth: thisMonth,
+                $isToday: today,
+                $isPastDate: pastDay 
               });
             };
           }
@@ -64,12 +64,14 @@
         calListeners.setScope($scope);
         calListeners.onDrop($parse(attrs.calDrop));
 
+        $scope.$weekdays = getWeekdays(parseInt(attrs.calWeekstart,10));
+
         var calendar = new Calendar();
 
         // watchers and observers to update calendar
-        $scope.$watch(function () { return $scope.$parent.$eval(attrs.calDate); }, function (date) {
-          $scope.date = date;
-          updateCalendar($scope.date);
+        $scope.$watch(function () { return $scope.$parent.$eval(attrs.calDate); }, function (newDate) {
+          date = newDate;
+          updateCalendar(newDate);
         });
 
         var startCalendarView = true;
@@ -80,7 +82,7 @@
             startCalendarView = false;
             return;
           }
-          updateCalendar($scope.date);
+          updateCalendar(date);
         });
 
         attrs.$observe('calWeeks', function (weeks) {
@@ -88,24 +90,32 @@
             startWeeks = false;
             return;
           }
-          updateCalendar($scope.date);
+          updateCalendar(date);
         });
 
+        function getWeekdays(weekStart) {
+          var weekdays = [];
+          var i = 0;
+          while (weekdays.length < 7) {
+            if (weekStart + i > 6) i = -weekStart;
+            var wday = weekStart + i;
+            weekdays.push(wday);
+            i++;
+          }
+          return weekdays;
+        }
+
         function updateCalendar (calendarDate) {
-          initialized = true;
           var date = new Date(calendarDate);
           
           var cal = calendar.createCalendar(date, 
             {
-              method: attrs.calendar,
-              weekStart: attrs.calWeekStart,
+              view: attrs.calendar,
+              weekStart: attrs.calWeekstart,
               weeks: attrs.calWeeks 
             }, populateSync);
 
-          $scope.calendar = cal.calendar;
-          $scope.weekdays = cal.weekdays;
-
-          console.log($scope.weekdays);
+          $scope.$weeks = cal.calendar;
 
           if (!match || populateSync || !attrs.calPopulate) return;
 
@@ -145,7 +155,7 @@
    * License: MIT
    */
 
-  .directive('calElement', function ($document, $compile, $rootScope, calListeners, $timeout) {
+  .directive('calDay', function ($document, $compile, $rootScope, calListeners, $timeout) {
 
       var body = $document[0].body,
         dragValue,
@@ -251,7 +261,7 @@
         var dropArea = getElementBehindPoint(floaty, ev.clientX, ev.clientY);
 
         var accepts = function () {
-          return !!dropArea.attr('cal-element');
+          return !!dropArea.attr('cal-day');
         };
 
         while (dropArea.length > 0 && !accepts()) {
@@ -260,7 +270,7 @@
 
         if (dropArea.length > 0) {
 
-          var expression = dropArea.attr('cal-element');
+          var expression = dropArea.attr('cal-day');
           var targetScope = dropArea.scope();
           var originScope = originElement.scope();
           var match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/);
@@ -304,10 +314,10 @@
         compile: function (container, attr) {
 
           // get the `thing in things` expression
-          var expression = attr.calElement;
+          var expression = attr.calDay;
           var match = expression.match(/^\s*(.+)\s+in\s+(.*?)\s*$/);
           if (!match) {
-            throw Error("Expected calElement in form of '_item_ in _collection_' but got '" +
+            throw Error("Expected calDay in form of '_item_ in _collection_' but got '" +
               expression + "'.");
           }
           var lhs = match[1];
@@ -366,7 +376,7 @@
 
               var originScope = originElement.scope();
 
-              var canDrag = originScope.$eval(child.attr('cal-entry-candrag'));
+              var canDrag = originScope.$eval(child.attr('cal-entry-draggable'));
 
               if (dragValue || !canDrag) {
                 return;
