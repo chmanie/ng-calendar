@@ -36,6 +36,7 @@
   .directive('calendar', function(Calendar, $parse, calListeners, $q){
     return {
       restrict: 'A',
+      scope: true,
 
       link: function($scope, element, attrs, controller) {
 
@@ -66,17 +67,32 @@
         var calendar = new Calendar();
 
         // watchers and observers to update calendar
-        $scope.$watch(function () { return $scope.$eval(attrs.calDate); }, updateCalendar);
-
-        attrs.$observe('calendar', function () {
+        $scope.$watch(function () { return $scope.$parent.$eval(attrs.calDate); }, function (date) {
+          $scope.date = date;
           updateCalendar($scope.date);
         });
 
-        attrs.$observe('calWeeks', function () {
+        var startCalendarView = true;
+        var startWeeks = true;
+
+        attrs.$observe('calendar', function (cal) {
+          if (startCalendarView) {
+            startCalendarView = false;
+            return;
+          }
+          updateCalendar($scope.date);
+        });
+
+        attrs.$observe('calWeeks', function (weeks) {
+          if (startWeeks) {
+            startWeeks = false;
+            return;
+          }
           updateCalendar($scope.date);
         });
 
         function updateCalendar (calendarDate) {
+          initialized = true;
           var date = new Date(calendarDate);
           
           var cal = calendar.createCalendar(date, 
@@ -87,6 +103,9 @@
             }, populateSync);
 
           $scope.calendar = cal.calendar;
+          $scope.weekdays = cal.weekdays;
+
+          console.log($scope.weekdays);
 
           if (!match || populateSync || !attrs.calPopulate) return;
 
@@ -97,7 +116,7 @@
           };
           var propName = populateMatch.mapper.replace(populateMatch.itemName, '').substr(1);
 
-          $q.when($scope.$eval(populateMatch.source)).then(function (calItems) {
+          $q.when($scope.$parent.$eval(populateMatch.source)).then(function (calItems) {
             
             var populate = function (date, thisMonth, today, pastDay) {
               var calEvents = [];
@@ -132,7 +151,6 @@
         dragValue,
         dragKey,
         dragOrigin,
-        dragDuplicate = false,
         floaty,
         offsetX,
         offsetY,
