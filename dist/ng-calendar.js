@@ -227,6 +227,7 @@
           return;
         }
 
+        enableSelect();
         $document.unbind('mousemove', drag);
 
         var dropArea = getElementBehindPoint(floaty, ev.clientX, ev.clientY);
@@ -342,13 +343,8 @@
             };
 
             elt.bind('mousedown', function (ev) {
-
-              // find the right parent
-              originElement = angular.element(ev.target);
               
-              while (originElement.attr('cal-entry') === undefined) {
-                originElement = originElement.parent();
-              }
+              originElement = angular.element(ev.target);
 
               var originScope = originElement.scope();
 
@@ -356,6 +352,11 @@
 
               if (dragValue || !canDrag) {
                 return;
+              }
+
+              // find the right parent
+              while (originElement.attr('cal-entry') === undefined) {
+                originElement = originElement.parent();
               }
 
               while (originScope[valueIdentifier] === undefined) {
